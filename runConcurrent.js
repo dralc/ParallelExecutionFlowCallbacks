@@ -1,18 +1,18 @@
 /**
  * Concurrently runs the functions in <collection>.
  * 
- * * @param {Array} collection A list of functions to run
- * @param {function({ taskIndex: number })} callback A function to run after each function in <collection>
- * @param {function} finalCallback The function to run after the last function in <collection> has run
+ * @param {Array< (done)=>{} >} collection A list of functions to run. Each function should have a callback parameter.
+ * @param {function({ taskIndex: number })} taskDoneCb A function to run after each function in <collection>
+ * @param {function} allTasksDoneCb The function to run after the last function in <collection> has run
  */
-module.exports = function runConcurrent(collection, callback, finalCallback) {
+module.exports = function runConcurrent(collection, taskDoneCb, allTasksDoneCb) {
   let completedTasks = 0;
   
   for (let i = 0, task; task = collection[i]; i++) {
     task(() => {
-      callback({ taskIndex: i });
+      taskDoneCb({ taskIndex: i });
       if (++completedTasks === collection.length) {
-        finalCallback()
+        allTasksDoneCb()
       }
     })
   }
