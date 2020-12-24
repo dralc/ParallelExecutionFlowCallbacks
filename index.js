@@ -1,4 +1,4 @@
-const runConcurrent = require('./runConcurrent')
+const { runConcurrentLimit } = require('./runConcurrent')
 const tasks = [
   // 1. Each async task should accept a callback called 'done'
   (done) => {
@@ -9,7 +9,7 @@ const tasks = [
   (done) => {
     setTimeout(
       () => done(null, { msg: 'hi'}),
-      1500)
+      1000)
   },
   (done) => {
     setTimeout(
@@ -25,8 +25,9 @@ const tasks = [
 
 console.log('Let\'s go:')
 
-runConcurrent(
+runConcurrentLimit(
   tasks,
+  2,
   // Task done callback
   ({ taskIndex, results, error }) => {
     console.log(
